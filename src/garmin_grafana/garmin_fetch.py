@@ -843,15 +843,25 @@ def fetch_activity_GPS(activityIDdict): # Uses FIT file by default, falls back t
         except (FileNotFoundError, FitParseError) as err:
             logging.error(err)
             logging.warning(f"Fallback : Failed to use FIT file for activityID {activityID} - Trying TCX file...")
+            
+            ns = {"tcx": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2", "ns3": "http://www.garmin.com/xmlschemas/ActivityExtension/v2"}
             try:
-                root = ET.fromstring(garmin_obj.download_activity(activityID, dl_fmt=garmin_obj.ActivityDownloadFormat.TCX).decode("UTF-8"))
+                tcx_file_data = garmin_obj.download_activity(activityID, dl_fmt=garmin_obj.ActivityDownloadFormat.TCX).decode("UTF-8")
+                root = ET.fromstring(tcx_file_data)
+                if KEEP_FIT_FILES:
+                    os.makedirs(FIT_FILE_STORAGE_LOCATION, exist_ok=True)
+                    activity_start_time = datetime.fromisoformat(root.findall("tcx:Activities/tcx:Activity", ns)[0].find("tcx:Id", ns).text.strip("Z"))
+                    tcx_path = os.path.join(FIT_FILE_STORAGE_LOCATION, activity_start_time.strftime('%Y%m%dT%H%M%SUTC-') + activity_type + ".tcx")
+                    with open(tcx_path, "w") as f:
+                        f.write(tcx_file_data)
+                    logging.info(f"Success : Activity ID {activityID} stored in output file {tcx_path}")
             except requests.exceptions.Timeout as err:
                 logging.warning(f"Request timeout for fetching large activity record {activityID} - skipping record")
                 return []
             except Exception as err:
                 logging.exception(f"Unable to fetch TCX for activity record {activityID} : skipping record")
                 return []
-            ns = {"tcx": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2", "ns3": "http://www.garmin.com/xmlschemas/ActivityExtension/v2"}
+
             for activity in root.findall("tcx:Activities/tcx:Activity", ns):
                 activity_start_time = datetime.fromisoformat(activity.find("tcx:Id", ns).text.strip("Z"))
                 lap_index = 1
