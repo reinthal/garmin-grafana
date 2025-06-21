@@ -10,3 +10,6 @@ devenv.local.nix
 
 # pre-commit
 .pre-commit-config.yaml
+.env
+.opencode
+docker-compose.yaml

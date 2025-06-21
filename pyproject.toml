@@ -16,3 +16,8 @@ dependencies = [
 
 [project.scripts]
 garmin-fetch = "garmin_grafana:main"
+
+[dependency-groups]
+dev = [
+    "ipython>=9.3.0",
+]
