@@ -1,0 +1,65 @@
+# Example Docker Compose configuration for InfluxDB v2
+# This is an example configuration showing how to use InfluxDB v2 with the Garmin fetch application
+
+services:
+  garmin-fetch-data:
+    restart: unless-stopped
+    image: thisisarpanghosh/garmin-fetch-data:latest
+    container_name: garmin-fetch-data
+    depends_on:
+      - influxdb
+    volumes:
+      - ./garminconnect-tokens:/home/appuser/.garminconnect
+    environment:
+      # InfluxDB v2 Configuration
+      - INFLUXDB_VERSION=2
+      - INFLUXDB_HOST=influxdb
+      - INFLUXDB_PORT=8086
+      - INFLUXDB_DATABASE=GarminStats
+      - INFLUXDB_TOKEN=your_influxdb_v2_token_here
+      - INFLUXDB_ORG=your_organization_name_here
+      
+      # Garmin Connect Configuration
+      - GARMINCONNECT_IS_CN=False
+      # - GARMINCONNECT_EMAIL=your_garminconnect_email
+      # - GARMINCONNECT_BASE64_PASSWORD=your_base64_encoded_garminconnect_password
+      
+      # Optional Configuration
+      - LOG_LEVEL=INFO
+      - UPDATE_INTERVAL_SECONDS=300
+      - FETCH_SELECTION=daily_avg,sleep,steps,heartrate,stress,breathing,hrv,vo2,activity,race_prediction,body_composition
+
+  influxdb:
+    restart: unless-stopped
+    container_name: influxdb
+    hostname: influxdb
+    image: 'influxdb:2.7'
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=adminpassword
+      - DOCKER_INFLUXDB_INIT_ORG=your_organization_name_here
+      - DOCKER_INFLUXDB_INIT_BUCKET=GarminStats
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=your_influxdb_v2_token_here
+    ports:
+      - '8086:8086'
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+
+  grafana:
+    restart: unless-stopped
+    container_name: grafana
+    image: 'grafana/grafana:latest'
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./Grafana_Datasource:/etc/grafana/provisioning/datasources
+      - ./Grafana_Dashboard:/etc/grafana/provisioning/dashboards
+
+volumes:
+  influxdb_data:
+  grafana_data: 

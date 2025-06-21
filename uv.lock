@@ -61,13 +61,14 @@ sdist = { url = "https://files.pythonhosted.org/packages/61/ed/5637fe96c56d55dfa
 
 [[package]]
 name = "garmin-grafana"
-version = "0.3.0"
+version = "1.0.0"
 source = { virtual = "." }
 dependencies = [
     { name = "dotenv" },
     { name = "fitparse" },
     { name = "garminconnect" },
     { name = "influxdb" },
+    { name = "influxdb-client" },
     { name = "influxdb3-python" },
     { name = "pandas" },
 ]
@@ -78,6 +79,7 @@ requires-dist = [
     { name = "fitparse", specifier = "==1.2.0" },
     { name = "garminconnect", specifier = "==0.2.26" },
     { name = "influxdb", specifier = "==5.3.2" },
+    { name = "influxdb-client", specifier = "==1.40.0" },
     { name = "influxdb3-python", specifier = "==0.12.0" },
     { name = "pandas", specifier = "==2.2.3" },
 ]
@@ -131,6 +133,22 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/12/d4/4c1bd3a8f85403fad3137a7e44f7882b0366586b7c27d12713493516f1c7/influxdb-5.3.2.tar.gz", hash = "sha256:58c647f6043712dd86e9aee12eb4ccfbbb5415467bc9910a48aa8c74c1108970", size = 70792, upload_time = "2024-04-18T21:45:09.163Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0e/00/d0ea35f823c46a5cd4fa80d933176d251573601d920737ce8a85df7664db/influxdb-5.3.2-py2.py3-none-any.whl", hash = "sha256:00d86b18a968d011b2eee39ec3b2ae941b1dcf7086bc7211e675914623caffcd", size = 79391, upload_time = "2024-04-18T21:45:06.471Z" },
+]
+
+[[package]]
+name = "influxdb-client"
+version = "1.40.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "certifi" },
+    { name = "python-dateutil" },
+    { name = "reactivex" },
+    { name = "setuptools" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/63/11/07ed82352a28e4e8b623a487337befec77d5bd18293dcc940d769e633f82/influxdb_client-1.40.0.tar.gz", hash = "sha256:027f970af1518479d8806f1cdf5ba20280f943e1b621c2acdbf9ca8dc9bdf1cb", size = 335997, upload_time = "2024-01-30T07:47:17.045Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a2/fc/98bb6d792aa298b9df82b10c3bc035d4017b749a1102272aa4b1c39f9c7e/influxdb_client-1.40.0-py3-none-any.whl", hash = "sha256:7aa115506a8ec89d10ff6e4d729cb0c78ca223a1f1b03412a7ad988da9011089", size = 744115, upload_time = "2024-01-30T07:47:13.646Z" },
 ]
 
 [[package]]

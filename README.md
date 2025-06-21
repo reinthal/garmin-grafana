@@ -62,7 +62,7 @@ A docker container to fetch data from Garmin servers and store the data in a loc
 
 - **Free and Fully Open Source**: 100% transparent and open project — modify, distribute extend, and self-host as you wish, with no hidden costs. Just credit the author and support this project as you please!
 - **Local Ownership**: Keep a complete, private backup of your Garmin data. The script automatically syncs new data after each Garmin Connect upload — no manual action needed ("set and forget").
-- **Full Visualization Freedom**: You're not limited by Garmin’s app. Combine multiple metrics on a single panel, zoom into specific time windows, view raw (non-averaged) data over days or weeks, and build fully custom dashboards.
+- **Full Visualization Freedom**: You're not limited by Garmin's app. Combine multiple metrics on a single panel, zoom into specific time windows, view raw (non-averaged) data over days or weeks, and build fully custom dashboards.
 - **Deeper Insights - All day metrics**: Explore your data to discover patterns, optimize performance, and track trends over longer periods of time. Export for advanced analysis (Python, Excel, etc.) from Grafana, set custom alerts, or create new personalized metrics. This project fetches _almost_ everything from your Garmin watch - not just limited to Activities analytics like most other online platforms
 - **No 3rd party data sharing**: You avoid sharing your sensitive health related data with any 3rd party service provider while having a great data visualization platform for free!
 
@@ -146,10 +146,50 @@ If you have come this far, everything should be working. If not, please check th
 
 ---
 
-This project is made for InfluxDB 1.11, as Flux queries on influxDB 2.x can be problematic to use with Grafana at times. In fact, InfluxQL is being reintroduced in InfluxDB 3.0, reflecting user feedback. Grafana also has better compatibility/stability with InfluxQL from InfluxDB 1.11. Moreover, there are statistical evidence that Influxdb 1.11 queries run faster compared to influxdb 2.x. Since InfluxDB 2.x offers no clear benefits for this project, there are no plans for a migration.
+This project now supports **InfluxDB 1.11**, **InfluxDB 2.x**, and **InfluxDB 3.x**. However, we recommend using **InfluxDB 1.11** as the default choice for the following reasons:
+
+- **Better Grafana Compatibility**: Grafana has better compatibility and stability with InfluxQL from InfluxDB 1.11
+- **Performance**: Statistical evidence shows that InfluxDB 1.11 queries run faster compared to InfluxDB 2.x
+- **Long-term Data Visualization**: InfluxDB 3.x OSS limits data query time to 72 hours for long-term queries (only available in enterprise and InfluxData cloud hosted instances), which defeats the purpose of long-term health data visualization
+
+### InfluxDB Version Configuration
+
+#### InfluxDB 1.11 (Recommended)
+```yaml
+environment:
+  - INFLUXDB_VERSION=1
+  - INFLUXDB_HOST=influxdb
+  - INFLUXDB_PORT=8086
+  - INFLUXDB_USERNAME=influxdb_user
+  - INFLUXDB_PASSWORD=influxdb_secret_password
+  - INFLUXDB_DATABASE=GarminStats
+```
+
+#### InfluxDB 2.x
+```yaml
+environment:
+  - INFLUXDB_VERSION=2
+  - INFLUXDB_HOST=influxdb
+  - INFLUXDB_PORT=8086
+  - INFLUXDB_DATABASE=GarminStats
+  - INFLUXDB_TOKEN=your_influxdb_v2_token_here
+  - INFLUXDB_ORG=your_organization_name_here
+```
+
+#### InfluxDB 3.x
+```yaml
+environment:
+  - INFLUXDB_VERSION=3
+  - INFLUXDB_HOST=influxdb
+  - INFLUXDB_PORT=8086
+  - INFLUXDB_DATABASE=GarminStats
+  - INFLUXDB_V3_ACCESS_TOKEN=your_influxdb_v3_token_here
+```
+
+For InfluxDB 2.x setup examples, see `compose-example-influxdb-v2.yml`.
 
 > [!IMPORTANT]
-> If you have an existing **InfluxDB v2.x** database and want to integrate that with this project, you can follow [this guide](https://github.com/arpanghosh8453/garmin-grafana/discussions/63#discussioncomment-13025100), although we officially do not support InfluxDB v2.x with this project. We have direct support for **InfluxDB v3.x**, but we do not actively encourage people to use that as it comes with paywalled features (InfluxDB v3.x OSS limits the data query time to 72 hours - long term queries are only available in enterprise and InfluxData cloud hosted instances) that are essential for long term data visualization. As we are interested in visualization of long term data trends, this limit defeats the purpose. Hence, we strongly recommend using InfluxDB 1.11.x (default settings) to our users as long as it's not discontinued from production.
+> If you have an existing **InfluxDB v2.x** database and want to integrate that with this project, you can now use the native InfluxDB v2 support. We have direct support for **InfluxDB v3.x**, but we do not actively encourage people to use that as it comes with paywalled features (InfluxDB v3.x OSS limits the data query time to 72 hours - long term queries are only available in enterprise and InfluxData cloud hosted instances) that are essential for long term data visualization. As we are interested in visualization of long term data trends, this limit defeats the purpose. Hence, we strongly recommend using InfluxDB 1.11.x (default settings) to our users as long as it's not discontinued from production.
 
 ### Additional configuration and environment variables
 
