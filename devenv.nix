@@ -7,9 +7,12 @@
 }: {
   # https://devenv.sh/basics/
   env.GREET = "devenv";
-
+  env.SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+  env.REQUESTS_CA_BUNDLE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+  env.PYTHONHTTPSVERIFY = "1";
+  
   # https://devenv.sh/packages/
-  packages = [pkgs.git];
+  packages = with pkgs; [git openssl cacert];
 
   # https://devenv.sh/languages/
   languages.python = {
